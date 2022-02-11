@@ -1,5 +1,4 @@
-# Epitech Mouli Bot
-## For Discord
+# Epitech Mouli Bot For Discord
 
 Foobar is a Python library for dealing with word pluralization.
 
