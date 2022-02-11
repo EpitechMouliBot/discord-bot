@@ -1,1 +1,1 @@
-# -HUB--epitech_mouli
+Epitech Mouli Bot
