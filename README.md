@@ -1,1 +1,1 @@
-#Epitech Mouli Bot
+Epitech Mouli Bot
