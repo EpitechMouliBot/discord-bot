@@ -9,8 +9,8 @@ def f_get_testRunId():
     return(data['testRunId'])
 
 def f_set_testRunId(testRunId:int):
-    with open('data.json', 'r') as file:
+    with open("data.json", 'r') as file:
         data = json.load(file)
     data['testRunId'] = testRunId
-    with open('data.json', 'w') as file:
+    with open("data.json", 'w') as file:
         json.dump(data, file, indent = 4)
