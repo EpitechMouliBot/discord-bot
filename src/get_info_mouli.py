@@ -1,7 +1,7 @@
 def get_format_date(date:str):
     date_one = date.split("T")
     date_two = str(date_one[1]).split("Z")
-    return ((date_two[0] + ' ' + date_one[0]).replace('"', ""))
+    return ((date_two[0] + ' ' + date_one[0]).replace('"', "")) # A CHECK (guillements)
 
 def get_Items(rsp_externalItems):
     bool = 0
