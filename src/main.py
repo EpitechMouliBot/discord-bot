@@ -19,5 +19,6 @@ while (check_connected_with_relay() == False):
 async def on_ready():
     print("Le bot est prêt !")
     check_new_mouli.start(client, "4634") #Thomas
+    time.sleep(30)
     check_new_mouli.start(client, "4635") #Marting
 client.run(token_discord)
