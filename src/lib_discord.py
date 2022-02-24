@@ -1,14 +1,12 @@
 import discord
 from datetime import datetime, timezone
 
-def set_embed(name_project, norme, coverage, color_embed, percents, items, date):
+def set_embed(name_project, norme, coverage, color_embed, percents, items, date, link):
     embed = discord.Embed(
         title = name_project + " | " + percents,
         color = color_embed,
-        description = date
+        description = date + '\n' + link
     )
-    # embed.add_field(name = items, value = date, inline = False)
-    # embed.add_field(name = "Pourcentage", value = percents, inline = False)
     embed.add_field(name = "Status", value = items, inline = False)
     embed.add_field(name = "Norme", value = norme, inline = True)
     embed.add_field(name = "Coverage", value = coverage, inline = True)

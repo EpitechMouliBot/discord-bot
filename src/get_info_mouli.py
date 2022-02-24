@@ -1,5 +1,7 @@
-from datetime import datetime
 import discord
+import bitly_api
+from datetime import datetime
+from dotenv import dotenv_values
 
 def get_format_date(date:str):
     new_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
@@ -74,3 +76,12 @@ def get_color(percent):
         return discord.Color.orange()
     else:
         return discord.Color.green()
+
+def get_link(last_project, testRundId):
+    secrets = dotenv_values(".env")
+    bitly = bitly_api.Connection(access_token = secrets['API_KEY_BITLY'])
+    base_link = "https://my.epitech.eu/index.html#d/2021/"
+    rsp_project = last_project['project']
+    part_link = rsp_project['module']['code'] + '/' + rsp_project['slug'] + '/' + str(testRundId)
+    link = bitly.shorten(base_link + part_link)['url']
+    return (link)
