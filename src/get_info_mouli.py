@@ -1,7 +1,10 @@
+from datetime import datetime
+import discord
+
 def get_format_date(date:str):
-    date_one = date.split("T")
-    date_two = str(date_one[1]).split("Z")
-    return ((date_two[0] + ' ' + date_one[0]).replace('"', "")) # A CHECK (guillements)
+    new_date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+    new_date = new_date.strftime("%d/%m/%Y %H:%M:%S")
+    return (new_date)
 
 def get_Items(rsp_externalItems):
     bool = 0
@@ -9,22 +12,22 @@ def get_Items(rsp_externalItems):
     for x in rsp_externalItems:
         x = x['type']
         if (x == "make-error"):
-            externalItems = "Build error "
+            externalItems = "Build error\n"
             bool = 1
         if (x == "coding-style-fail"):
-            externalItems += "Too many style errors "
+            externalItems += "Too many style errors\n"
             bool = 1
         if (x == "banned"):
-            externalItems += "Banned function used "
+            externalItems += "Banned function used\n"
             bool = 1
         if (x == "crash"):
-            externalItems += "Crash "
+            externalItems += "Crash\n"
             bool = 1
         if (x == "delivery-error"):
-            externalItems += "Delivery error "
+            externalItems += "Delivery error\n"
             bool = 1
         if (x == "no-test-passed"):
-            externalItems += "No tests passed "
+            externalItems += "No tests passed\n"
             bool = 1
         if (bool == 0):
             externalItems = "Prerequisites met"
@@ -35,11 +38,11 @@ def get_codingStyle(rsp_externalItems):
     for x in rsp_externalItems:
         r = x['type']
         if (r == 'lint.major'):
-            value += "Major [" + str(round(x['value'])) + "] | "
+            value += "[" + str(round(x['value'])) + "] Major\n"
         if (r == 'lint.minor'):
-            value += "Minor [" + str(round(x['value'])) + "] | "
+            value += "[" + str(round(x['value'])) + "] Minor\n"
         if (r == 'lint.info'):
-            value += "Info [" + str(round(x['value'])) + "]"
+            value += "[" + str(round(x['value'])) + "] Info"
     return (value)
 
 def get_Coverage(rsp_externalItems):
@@ -47,9 +50,9 @@ def get_Coverage(rsp_externalItems):
     for x in rsp_externalItems:
         r = x['type']
         if (r == 'coverage.branches'):
-            value += "Branches [" + str(round(x['value'], 2)) + "] | "
+            value += "[" + str(round(x['value'], 2)) + "] Branches\n"
         if (r == 'coverage.lines'):
-            value += "Lines [" + str(round(x['value'], 2)) + "]"
+            value += "[" + str(round(x['value'], 2)) + "] Lines"
     return (value)
 
 def get_percent_testPassed(rsp_skills):
@@ -61,5 +64,13 @@ def get_percent_testPassed(rsp_skills):
     for x in rsp_skills:
         passed += rsp_skills[x]['passed']
     percts = passed * 100 / count
-    percents = "[" + str(round(percts, 2)) + "%]"
+    percents = round(percts, 2)
     return (percents)
+
+def get_color(percent):
+    if (float(percent) < 25):
+        return discord.Color.red()
+    elif (float(percent) < 75):
+        return discord.Color.orange()
+    else:
+        return discord.Color.green()

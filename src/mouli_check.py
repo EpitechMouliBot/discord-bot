@@ -1,5 +1,5 @@
 import requests
-from notification import send_notification
+from notification import set_notification
 from discord.ext import tasks
 from manage_json import f_get_testRunId, f_set_testRunId
 
@@ -12,4 +12,6 @@ async def check_new_mouli(client):
     last_testRunId = f_get_testRunId()
     if (new_testRunId != last_testRunId):
         f_set_testRunId(new_testRunId)
-        send_notification(last_project, result)
+        embed = set_notification(last_project, result)
+        channel = client.get_channel(931875862201106483)
+        await channel.send(embed=embed)
