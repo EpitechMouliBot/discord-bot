@@ -14,4 +14,5 @@ async def check_new_mouli(client):
         f_set_testRunId(new_testRunId)
         embed = set_notification(last_project, result)
         channel = client.get_channel(931875862201106483)
-        await channel.send("<@&929523320980897803> New mouli !", embed=embed)
+        link = "https://my.epitech.eu/index.html#d/2021/" + last_project['project']['module']['code'] + '/' + last_project['project']['slug'] + '/' + str(last_project['results']['testRunId'])
+        await channel.send("<@&929523320980897803> New mouli !\n" + link, embed=embed)
