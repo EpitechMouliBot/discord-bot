@@ -12,7 +12,7 @@ async def check_new_mouli(client):
         last_project = req.json()[-1]
         result = last_project["results"]
         new_testRunId = result['testRunId']
-        last_testRunId = f_get_testRunId()
+        last_testRunId = f_get_testRunId(x)
         if (new_testRunId != last_testRunId):
             f_set_testRunId(new_testRunId)
             embed = set_notification(last_project, result, new_testRunId)
