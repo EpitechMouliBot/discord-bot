@@ -15,4 +15,10 @@ async def check_new_mouli(client, port):
         f_set_testRunId(new_testRunId)
         embed = set_notification(last_project, result, new_testRunId)
         channel = client.get_channel(931875862201106483)
-        await channel.send("<@&929523320980897803> New mouli !\n", embed=embed)
+        if (port == 4634):
+            user = "<@!419926802366988292>"
+        elif (port == 4635):
+            user = "<@!617422693008146443>"
+        else:
+            user = "None"
+        await channel.send(user + " New mouli !\n", embed=embed)
