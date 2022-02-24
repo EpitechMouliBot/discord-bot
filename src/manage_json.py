@@ -8,9 +8,13 @@ def f_get_testRunId(port:str):
         data = json.load(file)
     return(data[port])
 
-def f_set_testRunId(testRunId:int):
+def f_set_testRunId(testRunId:int, port:str):
     with open("data.json", 'r') as file:
         data = json.load(file)
-    data['testRunId'] = testRunId
+    for i in data:
+        if (i == port):
+            data[i] = testRunId
     with open("data.json", 'w') as file:
         json.dump(data, file, indent = 4)
+
+f_set_testRunId(66666, '4634')

@@ -9,8 +9,6 @@ client = discord.Client()
 secrets = dotenv_values(".env")
 token_discord = secrets["TOKEN_MOULI"]
 
-# f_set_testRunId(0)
-
 ######################MAIN#################################
 while (check_connected_with_relay() == False):
     time.sleep(5)
