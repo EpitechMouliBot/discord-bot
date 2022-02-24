@@ -3,7 +3,7 @@ from notification import set_notification
 from discord.ext import tasks
 from manage_json import f_get_testRunId, f_set_testRunId
 
-@tasks.loop(seconds = 5)
+@tasks.loop(seconds = 60)
 async def check_new_mouli(client, port):
     link_req = "http://localhost:" + port + "/epitest/me/2021"
     req = requests.get(link_req)
