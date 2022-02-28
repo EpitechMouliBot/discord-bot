@@ -2,7 +2,7 @@ from get_info_mouli import get_codingStyle, get_format_date, get_Items, get_perc
 import discord
 from lib_discord import set_embed
 
-def set_notification(last_project, result, new_testRunId):
+def set_notificationPrivate(last_project, result, new_testRunId):
     date = get_format_date(last_project['date'])
     rsp_externalItems = result['externalItems']
     items = get_Items(rsp_externalItems)
@@ -14,4 +14,12 @@ def set_notification(last_project, result, new_testRunId):
     percents = "[" + str(percents) + "%]"
 
     embed = set_embed(last_project['project']['name'], norme, coverage, color, percents, items, date, link)
+    return (embed)
+
+def set_notificationPublic(last_project, result):
+    date = get_format_date(last_project['date'])
+    color = discord.Color.green()
+    link = "https://my.epitech.eu/index.html#y/2021"
+
+    embed = set_embed(last_project['project']['name'], None, None, color, last_project['project']['module']['code'], None, date, link)
     return (embed)

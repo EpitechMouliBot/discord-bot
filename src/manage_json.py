@@ -16,5 +16,3 @@ def f_set_testRunId(testRunId:int, port:str):
             data[i] = testRunId
     with open("data.json", 'w') as file:
         json.dump(data, file, indent = 4)
-
-f_set_testRunId(66666, '4634')
