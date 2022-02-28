@@ -31,6 +31,6 @@ async def check_new_mouli(client):
 
 async def send_notifPublic(client, last_project, result):
     embed = set_notificationPublic(last_project, result)
-    channel = client.get_channel(931875862201106483)
-    user = "<@&923738560652247060>"
+    channel = client.get_channel(947832675236982794)
+    user = "<@&947968565905068062>"
     await channel.send(user + " New mouli !\n", embed=embed)
