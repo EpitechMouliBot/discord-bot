@@ -21,5 +21,5 @@ def set_notificationPublic(last_project, result):
     color = discord.Color.green()
     link = "https://my.epitech.eu/index.html#y/2021"
 
-    embed = set_embed(last_project['project']['name'], None, None, color, last_project['project']['module']['code'], None, date, link)
+    embed = set_embed(last_project['project']['name'], "", "", color, last_project['project']['module']['code'], "", date, link)
     return (embed)
