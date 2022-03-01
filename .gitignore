@@ -2,3 +2,4 @@ __pycache__
 .env
 my-epitech-relay
 cookies.json
+data.json
