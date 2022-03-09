@@ -16,8 +16,8 @@ async def check_new_mouli(client):
         last_testRunId = f_get_testRunId(x)
         if (new_testRunId != last_testRunId):
             f_set_testRunId(new_testRunId, x)
-            if (x == '4634'):
-                asyncio.create_task(send_notifPublic(client, last_project, result))
+            # if (x == '4634'):
+            #     asyncio.create_task(send_notifPublic(client, last_project, result))
             embed = set_notificationPrivate(last_project, result, new_testRunId)
             channel = client.get_channel(931875862201106483)
             if (x == '4634'):
