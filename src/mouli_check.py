@@ -9,7 +9,14 @@ async def check_new_mouli(client):
     port = ['4634', '4635']
     for x in port:
         link_req = "http://localhost:" + x + "/epitest/me/2021"
-        req = requests.get(link_req)
+        try:
+            req = requests.get(link_req)
+        except requests.exceptions.ConnectionError:
+            print("Can't connect to my.epitech.eu with port " + x)
+            return
+        if (req.status_code != 200):
+            print("Bad request")
+            return
         last_project = req.json()[-1]
         result = last_project["results"]
         new_testRunId = result['testRunId']
