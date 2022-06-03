@@ -1,11 +1,14 @@
 from notification import set_notificationPrivate
 from discord.ext import tasks
-from manage_json import f_get_testRunId, f_set_testRunId
+from manage_json import f_get_testRunId, f_set_testRunId, check_exist_file
 from manage_relay import check_connexion_relay_with_x
 
 @tasks.loop(seconds = 60)
-async def check_new_mouli(client):
+async def check_new_mouli(client, pwd_data):
     port = ['4634', '4635']
+    if (check_exist_file(pwd_data) is False):
+        print("error: data.json isnt exist")
+        return
     for x in port:
         link_req = "http://localhost:" + x + "/epitest/me/2021"
         req = check_connexion_relay_with_x(link_req)

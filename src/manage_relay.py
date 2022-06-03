@@ -23,10 +23,11 @@ def check_connexion_relay_with_x(link_req:str):
     return (req)
 
 async def while_down_connexion(client, port:str, link_req:str) -> None:
-    time.sleep(30)
-    if (check_connexion_relay_with_x(link_req) != None):
-        return
-    f_set_status(port, False)
+    for i in range(5):
+        time.sleep(60)
+        if (check_connexion_relay_with_x(link_req) != None):
+            f_set_status(port, True)
+            return
     await send_alert_discord_relay(client, port)
     return
 

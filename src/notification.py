@@ -1,6 +1,5 @@
-from get_info_mouli import get_codingStyle, get_format_date, get_Items, get_percent_testPassed, get_Coverage, get_color, get_link
-import discord
 from lib_discord import set_embed
+from get_info_mouli import get_codingStyle, get_format_date, get_Items, get_percent_testPassed, get_Coverage, get_color, get_link
 
 def set_notificationPrivate(last_project, result, new_testRunId):
     date = get_format_date(last_project['date'])

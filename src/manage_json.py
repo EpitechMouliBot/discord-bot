@@ -1,4 +1,9 @@
 import json
+import os.path
+
+def check_exist_file(pathfile:str):
+    isExist = os.path.exists(pathfile)
+    return (isExist)
 
 def print_pretty_json(json_data):
     print(json.dumps(json_data, indent=4, separators=(',', ': '), sort_keys=True))
