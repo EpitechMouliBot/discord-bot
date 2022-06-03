@@ -13,7 +13,7 @@ def set_embed(name_project, norme, coverage, color_embed, percents, items, date,
         embed.add_field(name = "Norme", value = norme, inline = True)
     if (coverage != ""):
         embed.add_field(name = "Coverage", value = coverage, inline = True)
-    embed.set_thumbnail(url = "https://www.epitech.bj/wp-content/uploads/2020/03/EPI-LOGO-SIGNATURE-2018.png")
+    embed.set_thumbnail(url = "https://media.discordapp.net/attachments/929701838335385631/976441374339645450/etipek_little.png")
     embed.set_footer(text = "my.epitech.eu |", icon_url = "https://my.epitech.eu/favicon.png")
     embed.timestamp = datetime.now(timezone.utc)
     return (embed)

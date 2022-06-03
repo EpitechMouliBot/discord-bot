@@ -1,4 +1,10 @@
 {
-    "4634": 0,
-    "4635": 0
+    "4634": {
+        "testRunId": 0,
+        "status": true
+    },
+    "4635": {
+        "testRunId": 0,
+        "status": true
+    }
 }
