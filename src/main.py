@@ -2,7 +2,7 @@ import time
 import discord
 from dotenv import dotenv_values
 from mouli_check import check_new_mouli
-from manage_relay import check_connected_with_relay
+from manage_relay import check_connected_with_relay, check_connexion_relay
 
 ####################INITS_VARIABLE####################
 client = discord.Client()
@@ -17,4 +17,5 @@ while (check_connected_with_relay() == False):
 async def on_ready():
     print("Le bot est prêt !")
     check_new_mouli.start(client)
+    check_connexion_relay.start(client)
 client.run(token_discord)

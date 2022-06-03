@@ -12,14 +12,16 @@ def set_notificationPrivate(last_project, result, new_testRunId):
     color = get_color(percents)
     link = get_link(last_project, new_testRunId)
     percents = "[" + str(percents) + "%]"
-
     embed = set_embed(last_project['project']['name'], norme, coverage, color, percents, items, date, link)
     return (embed)
 
-def set_notificationPublic(last_project, result):
-    date = get_format_date(last_project['date'])
-    color = discord.Color.green()
-    link = "https://my.epitech.eu/index.html#y/2021"
-
-    embed = set_embed(last_project['project']['name'], "", "", color, last_project['project']['module']['code'], "", date, link)
-    return (embed)
+async def send_alert_discord_relay(client, port:str):
+    channel = client.get_channel(931875862201106483)
+    if (port == '4634'):
+        user = "<@!419926802366988292>"
+    elif (port == '4635'):
+        user = "<@!617422693008146443>"
+    else:
+        user = "None"
+    message = "Your cookie.json is expired, please do it again to reactivate your notifications."
+    await channel.send(user + "| cookie.json expired !\n" + message)
