@@ -8,7 +8,8 @@ from manage_json import check_exist_file
 from manage_relay import check_connected_with_relay, check_connexion_relay
 
 ####################INITS_VARIABLE####################
-client = discord.Client()
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
 secrets = dotenv_values(".env")
 token_discord = secrets["TOKEN_MOULI"]
 pwd_data = secrets["PWD_DATA"]

@@ -11,6 +11,7 @@ def check_connected_with_relay() -> bool:
         requests.get("http://localhost:4635/epitest/me/2021") # martin
         return (True)
     except:
+        print("Bad connexion relay")
         return (False)
 
 def check_connexion_relay_with_x(link_req:str):
