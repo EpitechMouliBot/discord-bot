@@ -1,8 +1,7 @@
 __pycache__
 .env
-my-epitech-relay
 cookies.json
 data.json
-.vscode/
-bitly-api-python/
-data.json
+node_modules/
+package.json
+package-lock.json
