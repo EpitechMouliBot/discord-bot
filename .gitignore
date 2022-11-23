@@ -1,7 +1,4 @@
 __pycache__
 .env
-cookies.json
-data.json
 node_modules/
-package.json
-package-lock.json
+.vscode/

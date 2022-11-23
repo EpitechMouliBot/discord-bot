@@ -1,0 +1,26 @@
+{
+  "type": "module",
+  "dependencies": {
+    "axios": "^1.1.3",
+    "discord.js": "^14.6.0",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  },
+  "name": "discord-bot",
+  "description": "<h1 align=\"center\">Epitech Mouli Bot</h1>",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EpitechMouliBot/discord-bot.git"
+  },
+  "author": "Thomas OTT & Martin d'Hérouville",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EpitechMouliBot/discord-bot/issues"
+  },
+  "homepage": "https://github.com/EpitechMouliBot/discord-bot#readme"
+}
