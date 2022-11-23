@@ -1,8 +1,6 @@
 import axios from 'axios';
-import express from "express";
-const app = express();
 
-export async function executeBDDApiRequest(endpoint, params, method, body) {
+async function executeBDDApiRequest(endpoint, params, method, body) {
     const rsp = await axios({
         method: method,
         url: "http://127.0.0.1:3000/" + endpoint + params,
