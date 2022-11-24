@@ -1,21 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens } from '../global.js';
-import axios from 'axios';
-
-function initRequest(method, url, token = "", body = {}) {
-    return axios({
-        method: method,
-        url: url,
-        headers: {
-            "Authorization": "Bearer " + token,
-            "Content-Type": "application/json"
-        },
-        data: body
-    });
-}
+import { tokens, initRequest } from '../global.js';
 
 function setUserIdInDb(id, token, discordUserId) {
-
     initRequest('PUT', `http://127.0.0.1:3000/user/id/${id}`, token, {
         "server_id": discordUserId //TODO changer server_id en user_id
     }).then((response) => {
