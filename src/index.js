@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { Client, Events, Collection, GatewayIntentBits } from 'discord.js';
 import { checkNewTestForEveryUsers } from './check_new_tests.js';
-import { initCommands } from './commands/init.js';
+import { initCommands } from './init_commands.js';
 const token = process.env.DISCORD_BOT_TOKEN;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
@@ -12,6 +12,7 @@ await initCommands(client);
 
 client.on('ready', async function() {
 	checkNewTestForEveryUsers(client);
+	console.log(`${client.user.tag} is ready`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
