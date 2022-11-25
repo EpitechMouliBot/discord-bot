@@ -19,8 +19,11 @@ async function setChannelIdInDb(interaction, channelId) {
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
     }).catch(async (error) => {
-        console.log(error);
-        await interaction.reply({ content: `Error while trying to set command, please retry`, ephemeral: true });
+        if (error.code === 'ERR_BAD_REQUEST') {
+            await interaction.reply({ content: `Error while trying to set command, please /login and retry`, ephemeral: true });
+        } else {
+            await interaction.reply({ content: `Error while trying to set command`, ephemeral: true });
+        }
     });
 }
 

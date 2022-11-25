@@ -24,15 +24,18 @@ async function sendLastMouli(interaction, mouliOffset) {
             const userInfo = {
                 channel_id: interaction.channelId
             }
-            sendNotification(interaction.client, userInfo, response.data.slice(mouliOffset)[0], testRunId);
+            sendNotification(interaction.client, userInfo, response.data.slice(mouliOffset)[0], testRunId); //TODO recoder la fonction
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
             console.log(messageRes);
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
     }).catch(async (error) => {
-        console.log(error);
-        await interaction.reply({ content: `Error while trying to get mouli, please retry`, ephemeral: true });
+        if (error.code === 'ECONNREFUSED') {
+            await interaction.reply({ content: `Error while trying to get mouli`, ephemeral: true });
+        } else {
+            await interaction.reply({ content: `Error while trying to get mouli, please /login and retry`, ephemeral: true });
+        }
     });
 }
 
