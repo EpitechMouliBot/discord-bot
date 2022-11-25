@@ -8,7 +8,10 @@ const config = await loadConfigJson();
 
 const token = process.env.DISCORD_BOT_TOKEN;
 const clientId = config.dev ? config.dev_client_id : config.final_client_id;
-const guildId = config.dev ? config.dev_server_id : 0;
+const guildId = config.dev ? config.dev_server_id : "";
+
+console.log(clientId);
+console.log(guildId);
 
 const commands = [];
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
@@ -24,11 +27,14 @@ const rest = new REST({ version: '10' }).setToken(token);
 	try {
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
-		const data = await rest.put(
-			config.dev ? Routes.applicationGuildCommands(clientId, guildId) : Routes.applicationCommands(clientId),
-
-			{ body: commands },
-		);
+		const data = config.dev ?
+			await rest.put(
+				Routes.applicationGuildCommands(clientId, guildId),
+				{ body: commands },
+			) : await rest.put(
+				Routes.applicationCommands(clientId),
+				{ body: commands },
+			);
 
 		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
