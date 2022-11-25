@@ -3,7 +3,10 @@ dotenv.config();
 import { Client, Events, Collection, GatewayIntentBits } from 'discord.js';
 import { checkNewTestForEveryUsers } from './check_new_tests.js';
 import { initCommands } from './init_commands.js';
-const token = process.env.DISCORD_BOT_TOKEN;
+import { loadConfigJson } from './global.js';
+
+const config = await loadConfigJson();
+const token = config.dev ? process.env.DEV_DISCORD_BOT_TOKEN : process.env.FINAL_DISCORD_BOT_TOKEN;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 client.commands = new Collection();

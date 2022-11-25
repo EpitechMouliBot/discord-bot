@@ -6,12 +6,11 @@ import { loadConfigJson } from './src/global.js';
 
 const config = await loadConfigJson();
 
-const token = process.env.DISCORD_BOT_TOKEN;
+console.log(config.dev ? `Using dev mode` : `Using final mode`);
+
+const token = config.dev ? process.env.DEV_DISCORD_BOT_TOKEN : process.env.FINAL_DISCORD_BOT_TOKEN;
 const clientId = config.dev ? config.dev_client_id : config.final_client_id;
 const guildId = config.dev ? config.dev_server_id : "";
-
-console.log(clientId);
-console.log(guildId);
 
 const commands = [];
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
