@@ -1,12 +1,14 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens, initRequest } from '../global.js';
+import { tokens, initRequest, loadConfigJson } from '../global.js';
 
-async function setUserIdInDb(interaction, channelId) {
+const config = await loadConfigJson();
+
+async function setChannelIdInDb(interaction, channelId) {
     const id = tokens[interaction.user.id].id;
     const token = tokens[interaction.user.id].token;
 
-    initRequest('PUT', `http://127.0.0.1:3000/user/id/${id}`, token, {
+    initRequest('PUT', `${config.apidb_host}/user/id/${id}`, token, {
         "channel_id": channelId
     }).then(async (response) => {
         if (response.status === 200) {
@@ -34,6 +36,6 @@ export let command = {
             .addChannelTypes(ChannelType.GuildAnnouncement)
         ),
 	async execute(interaction) {
-        await setUserIdInDb(interaction, interaction.options.getChannel('channel').id);
+        await setChannelIdInDb(interaction, interaction.options.getChannel('channel').id);
 	},
 };

@@ -2,9 +2,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs';
+import { loadConfigJson } from './src/global.js';
+
+const config = await loadConfigJson();
+
 const token = process.env.DISCORD_BOT_TOKEN;
-const clientId = process.env.CLIENTID;
-const guildId = "849609664193888267";
+const clientId = config.dev ? config.dev_client_id : config.final_client_id;
+const guildId = config.dev ? config.dev_server_id : 0;
 
 const commands = [];
 const commandFiles = fs.readdirSync('./src/commands').filter(file => file.endsWith('.js'));
@@ -21,10 +25,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = await rest.put(
-//** to sync only on a guild
-			Routes.applicationGuildCommands(clientId, guildId),
-//** to sync on all guilds
-			// Routes.applicationCommands(clientId),
+			config.dev ? Routes.applicationGuildCommands(clientId, guildId) : Routes.applicationCommands(clientId),
 
 			{ body: commands },
 		);

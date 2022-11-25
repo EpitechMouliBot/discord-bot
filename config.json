@@ -1,0 +1,8 @@
+{
+    "dev": true,
+    "final_client_id": 1045341766808772638,
+    "dev_client_id": 938799277319258113,
+    "dev_server_id": 849609664193888267,
+    "apidb_host": "http://127.0.0.1:3000",
+    "relay_host": "http://127.0.0.1:8090"
+}

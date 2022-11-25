@@ -1,8 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, initRequest } from '../global.js';
+import { tokens, initRequest, loadConfigJson } from '../global.js';
+
+const config = await loadConfigJson();
 
 function setUserIdInDb(id, token, discordUserId) {
-    initRequest('PUT', `http://127.0.0.1:3000/user/id/${id}`, token, {
+    initRequest('PUT', `${config.apidb_host}/user/id/${id}`, token, {
         "server_id": discordUserId //TODO changer server_id en user_id
     }).then((response) => {
     }).catch((error) => {
@@ -11,7 +13,7 @@ function setUserIdInDb(id, token, discordUserId) {
 }
 
 async function setTokenLogin(interaction, email, password) {
-    initRequest('POST', 'http://127.0.0.1:3000/login', "", {
+    initRequest('POST', `${config.apidb_host}/login`, "", {
         "email": email,
         "password": password
     }).then(async (response) => {

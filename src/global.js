@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { readFile } from 'fs/promises';
 
 export let tokens = {
     '617422693008146443': {
@@ -17,4 +18,8 @@ export function initRequest(method, url, token = "", body = {}) {
         },
         data: body
     });
+}
+
+export async function loadConfigJson() {
+    return JSON.parse(await readFile(new URL('../config.json', import.meta.url)));
 }
