@@ -1,6 +1,7 @@
 import {getOkStatusOnAPI, set_testRunID_onAPI} from './get_api.js';
 import {getRelayApiRequest} from './get_relay.js';
 import {sendNotification} from './notification.js';
+import * as log from './log/log.js';
 
 const asyncFunction = (t) => new Promise(resolve => setTimeout(resolve, t));
 
@@ -16,7 +17,7 @@ export async function checkNewTestForEveryUsers(client) {
 	while (true) {
         const userList = await getOkStatusOnAPI();
         if (userList == undefined) {
-            console.log("User list not found");
+            log.warning("User list not found");
             continue;
         }
 		for (let i = 0; i < userList.length; i++) {

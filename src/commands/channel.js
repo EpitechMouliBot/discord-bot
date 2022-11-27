@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
 import { tokens, initRequest, loadConfigJson } from '../global.js';
+import * as log from '../log/log.js';
 
 const config = await loadConfigJson();
 
@@ -15,7 +16,7 @@ async function setChannelIdInDb(interaction, channelId) {
             await interaction.reply({ content: `Channel successfully defined to <#${channelId}>`, ephemeral: true });
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            console.log(messageRes);
+            log.error(messageRes);
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
     }).catch(async (error) => {
