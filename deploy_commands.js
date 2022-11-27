@@ -3,10 +3,11 @@ dotenv.config();
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs';
 import { loadConfigJson } from './src/global.js';
+import * as log from './src/log/log.js';
 
 const config = await loadConfigJson();
 
-console.log(config.dev ? `Using dev mode` : `Using final mode`);
+log.info(config.dev ? `Using dev mode` : `Using final mode`);
 
 const token = config.dev ? process.env.DEV_DISCORD_BOT_TOKEN : process.env.FINAL_DISCORD_BOT_TOKEN;
 const clientId = config.dev ? config.dev_client_id : config.final_client_id;
@@ -24,7 +25,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 (async () => {
 	try {
-		console.log(`Started refreshing ${commands.length} application (/) commands.`);
+		log.info(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = config.dev ?
 			await rest.put(
@@ -35,7 +36,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 				{ body: commands },
 			);
 
-		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
+		log.success(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
 		console.error(error);
 	}

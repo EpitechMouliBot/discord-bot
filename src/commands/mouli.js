@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { tokens, initRequest, loadConfigJson } from '../global.js';
 import { sendNotification } from '../notification.js';
+import * as log from '../log/log.js';
 
 const config = await loadConfigJson();
 
@@ -27,7 +28,7 @@ async function sendLastMouli(interaction, mouliOffset) {
             sendNotification(interaction.client, userInfo, response.data.slice(mouliOffset)[0], testRunId); //TODO recoder la fonction
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            console.log(messageRes);
+            log.error(messageRes);
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
     }).catch(async (error) => {

@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { tokens, initRequest, loadConfigJson } from '../global.js';
+import * as log from '../log/log.js';
 
 const config = await loadConfigJson();
 
@@ -8,7 +9,7 @@ function setUserIdInDb(id, token, discordUserId) {
         "server_id": discordUserId //TODO changer server_id en user_id
     }).then((response) => {
     }).catch((error) => {
-        console.log(error);
+        log.error(error);
     });
 }
 
@@ -26,12 +27,12 @@ async function setTokenLogin(interaction, email, password) {
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            console.log(messageRes);
+            log.error(messageRes);
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
         response.data;
     }).catch(async (error) => {
-        console.log(error);
+        log.error(error);
         await interaction.reply({ content: `Error while trying to login, please retry`, ephemeral: true });
     });
 }
