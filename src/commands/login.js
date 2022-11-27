@@ -1,10 +1,9 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, initRequest, loadConfigJson } from '../global.js';
-
-const config = await loadConfigJson();
+import { tokens } from '../global.js';
+import { executeBDDApiRequest } from '../get_api.js';
 
 function setUserIdInDb(id, token, discordUserId) {
-    initRequest('PUT', `${config.apidb_host}/user/id/${id}`, token, {
+    executeBDDApiRequest('PUT', `/user/id/${id}`, token, {
         "server_id": discordUserId //TODO changer server_id en user_id
     }).then((response) => {
     }).catch((error) => {
@@ -13,7 +12,7 @@ function setUserIdInDb(id, token, discordUserId) {
 }
 
 async function setTokenLogin(interaction, email, password) {
-    initRequest('POST', `${config.apidb_host}/login`, "", {
+    executeBDDApiRequest('POST', `/login`, "", {
         "email": email,
         "password": password
     }).then(async (response) => {

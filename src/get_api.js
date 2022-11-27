@@ -1,29 +1,16 @@
 import axios from 'axios';
+import { loadConfigJson } from './global.js';
 
-async function executeBDDApiRequest(endpoint, params, method, body) {
-    const rsp = await axios({
+const config = await loadConfigJson();
+
+export async function executeBDDApiRequest(method, endpoint, token = "", body = {}) {
+    return axios({
         method: method,
-        url: "http://127.0.0.1:3000/" + endpoint + params,
+        url: config.apidb_host + endpoint,
         headers: {
-            "Authorization": "Bearer " + "veuxarisassherkzbdbd",
+            "Authorization": "Bearer " + token,
+            "Content-Type": "application/json"
         },
         data: body
-    }).catch(e => e.response);
-    if (rsp == undefined)
-        return (false);
-    return rsp;
-}
-
-export async function getOkStatusOnAPI() {
-    const rsp = await executeBDDApiRequest("user/status/", "ok", 'GET', {});
-    if (rsp == undefined)
-        return (false);
-    return (rsp.data);
-}
-
-export async function set_testRunID_onAPI(id) {
-    const rsp = executeBDDApiRequest("user/status/", id, 'PUT', {});
-    if (rsp == undefined)
-        return (false);
-    return (rsp.data);
+    });
 }

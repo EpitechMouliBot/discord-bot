@@ -1,8 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, initRequest, loadConfigJson } from '../global.js';
+import { tokens } from '../global.js';
+import { executeBDDApiRequest } from '../get_api.js';
 import { sendNotification } from '../notification.js';
-
-const config = await loadConfigJson();
 
 function get_last_testRunId(data) {
     if (data.length < 1)
@@ -18,7 +17,7 @@ async function sendLastMouli(interaction, mouliOffset) {
 
     // await interaction.reply({ content: `Command not yet supported` });
 
-    initRequest('GET', `${config.relay_host}/${email}/epitest/me/2021`).then(async (response) => {
+    executeBDDApiRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
         if (response.status === 200) {
             const testRunId = get_last_testRunId(response.data);
             const userInfo = {
