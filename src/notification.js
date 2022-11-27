@@ -19,21 +19,21 @@ function createEmbed(title, description, statusContent, normeContent, testUrl, c
     return (notificationEmbed);
 }
 
-export async function sendNotification(client, userInfo, testRunInfo, testRunId) {
+export async function sendNotification(client, userTagID, channel_id, lastTestRunInfo, testRunId) {
     try {
-        const channel = await client.channels.fetch(userInfo['channel_id']);
-        let title = testRunInfo['project']['name'];
-        let percentPassed = calculateSkillsPercent(testRunInfo['results']['skills']);
+        const channel = await client.channels.fetch(channel_id);
+        let title = lastTestRunInfo['project']['name'];
+        let percentPassed = calculateSkillsPercent(lastTestRunInfo['results']['skills']);
         title += ' | ' + percentPassed.toString() + '%]';
-        const description = formatDate(testRunInfo['date']);
-        const statusContent = getCompleteStatus(testRunInfo['results']['externalItems']);
-        const normeContent = getCompleteNorme(testRunInfo['results']['externalItems']);
-        const testUrl = getCompleteUrl(testRunInfo['project']['module']['code'], testRunInfo['project']['slug'], testRunId);
+        const description = formatDate(lastTestRunInfo['date']);
+        const statusContent = getCompleteStatus(lastTestRunInfo['results']['externalItems']);
+        const normeContent = getCompleteNorme(lastTestRunInfo['results']['externalItems']);
+        const testUrl = getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId);
         const color = getAdaptiveColor(percentPassed);
         const notificationEmbed = createEmbed(title, description, statusContent, normeContent, testUrl, color);
         const thumbnailImage = new AttachmentBuilder('./images/etipek_logo.png');
         const footerImage = new AttachmentBuilder('./images/myepitech_logo.png')
-        await channel.send({content:"<@577856714347511828>", embeds: [notificationEmbed], files: [thumbnailImage, footerImage]});
+        await channel.send({content:`<@${userTagID}>`, embeds: [notificationEmbed], files: [thumbnailImage, footerImage]});
     } catch (error) {
         return;
     }
