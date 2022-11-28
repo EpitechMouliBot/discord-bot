@@ -4,7 +4,7 @@ import { executeBDDApiRequest } from '../get_api.js';
 
 function setUserIdInDb(id, token, discordUserId) {
     executeBDDApiRequest('PUT', `/user/id/${id}`, token, {
-        "server_id": discordUserId //TODO changer server_id en user_id
+        "user_id": discordUserId
     }).then((response) => {
     }).catch((error) => {
         console.log(error);
@@ -21,6 +21,7 @@ async function setTokenLogin(interaction, email, password) {
                 id: response.data.id,
                 token: response.data.token
             };
+            console.log("tokens: ", tokens)
             setUserIdInDb(response.data.id, response.data.token, interaction.user.id);
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
         } else {
