@@ -1,18 +1,17 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { tokens } from '../global.js';
-import { sendNotification } from '../notification.js';
+import { setNotificationEmbed } from '../notification.js';
 import { executeRelayApiRequest, getLast_testRunId } from '../get_relay.js'
 
 async function sendLastMouli(interaction, mouliOffset) {
     const channel_id = tokens[interaction.user.id].channel_id;
     const email = tokens[interaction.user.id].email;
 
-    // await interaction.reply({ content: `Command not yet supported` });
-
     executeRelayApiRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
         if (response.status === 200) {
             const testRunId = await getLast_testRunId(response.data);
-            sendNotification(interaction.client, interaction.user.id, channel_id, response.data.slice(mouliOffset)[0], testRunId);
+            const embed = await setNotificationEmbed(response.data.slice(mouliOffset)[0], testRunId);
+            interaction.reply({embeds: embed['embed'], files: embed['files']})
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
             log.error(messageRes);

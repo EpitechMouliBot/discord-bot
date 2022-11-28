@@ -4,7 +4,7 @@ import { formatDate, calculateSkillsPercent, getCompleteStatus,
 
 function createEmbed(title, description, statusContent, normeContent, testUrl, color) {
 
-    const notificationEmbed = new EmbedBuilder()
+    const embed = new EmbedBuilder()
     .setTitle(title)
     .setDescription(description)
     .addFields(
@@ -12,29 +12,24 @@ function createEmbed(title, description, statusContent, normeContent, testUrl, c
         { name: 'Norme', value: normeContent, inline: false },
     )
     .setTimestamp()
-    .setThumbnail('attachment://etipek_logo.png')
+    .setThumbnail('attachment://epitechmoulibot_logo.png')
     .setColor(color)
     .setFooter({ text: 'my.epitech.eu', iconURL: 'attachment://myepitech_logo.png' })
     .setURL(testUrl);
-    return (notificationEmbed);
+    return (embed);
 }
 
-export async function sendNotification(client, userTagID, channel_id, lastTestRunInfo, testRunId) {
-    try {
-        const channel = await client.channels.fetch(channel_id);
-        let title = lastTestRunInfo['project']['name'];
-        let percentPassed = calculateSkillsPercent(lastTestRunInfo['results']['skills']);
-        title += ' | ' + percentPassed.toString() + '%]';
-        const description = formatDate(lastTestRunInfo['date']);
-        const statusContent = getCompleteStatus(lastTestRunInfo['results']['externalItems']);
-        const normeContent = getCompleteNorme(lastTestRunInfo['results']['externalItems']);
-        const testUrl = getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId);
-        const color = getAdaptiveColor(percentPassed);
-        const notificationEmbed = createEmbed(title, description, statusContent, normeContent, testUrl, color);
-        const thumbnailImage = new AttachmentBuilder('./images/etipek_logo.png');
-        const footerImage = new AttachmentBuilder('./images/myepitech_logo.png')
-        await channel.send({content:`<@${userTagID}>`, embeds: [notificationEmbed], files: [thumbnailImage, footerImage]});
-    } catch (error) {
-        return;
-    }
+export async function setNotificationEmbed(lastTestRunInfo, testRunId) {
+    let title = lastTestRunInfo['project']['name'];
+    let percentPassed = calculateSkillsPercent(lastTestRunInfo['results']['skills']);
+    title += ' | ' + percentPassed.toString() + '%]';
+    const description = formatDate(lastTestRunInfo['date']);
+    const statusContent = getCompleteStatus(lastTestRunInfo['results']['externalItems']);
+    const normeContent = getCompleteNorme(lastTestRunInfo['results']['externalItems']);
+    const testUrl = getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId);
+    const color = getAdaptiveColor(percentPassed);
+    const notificationEmbed = createEmbed(title, description, statusContent, normeContent, testUrl, color);
+    const thumbnailImage = new AttachmentBuilder('./images/epitechmoulibot_logo.png');
+    const footerImage = new AttachmentBuilder('./images/myepitech_logo.png')
+    return ({embed: [notificationEmbed], files: [thumbnailImage, footerImage]});
 }
