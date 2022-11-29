@@ -16,7 +16,7 @@ await initCommands(client);
 
 client.on('ready', async function() {
 	checkNewTestForEveryUsers(client);
-	console.log(`${client.user.tag} is ready`);
+	log.success(`${client.user.tag} is ready`);
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {

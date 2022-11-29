@@ -8,7 +8,7 @@ function setUserIdInDb(id, token, discordUserId) {
         "user_id": discordUserId
     }).then((response) => {
     }).catch((error) => {
-        console.log(error);
+        log.error(error);
     });
 }
 
@@ -27,7 +27,7 @@ async function setTokenLogin(interaction, email, password) {
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            console.log(messageRes);
+            log.error(messageRes);
             await interaction.reply({ content: messageRes, ephemeral: true });
         }
         response.data;
