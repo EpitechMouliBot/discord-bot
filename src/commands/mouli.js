@@ -6,7 +6,7 @@ import * as log from '../log/log.js';
 
 async function sendLastMouli(interaction, mouliOffset) {
     if (!tokens.hasOwnProperty(interaction.user.id)) {
-        await interaction.reply({ content: `You are not logged in, please /login and retry`, ephemeral: true });
+        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
         return;
     }
     const email = tokens[interaction.user.id].email;
@@ -25,7 +25,7 @@ async function sendLastMouli(interaction, mouliOffset) {
         if (error.code === 'ECONNREFUSED') {
             await interaction.reply({ content: `Error while trying to get mouli`, ephemeral: true });
         } else {
-            await interaction.reply({ content: `Error while trying to get mouli, please /login and retry`, ephemeral: true });
+            await interaction.reply({ content: `Error while trying to get mouli, please \`/login\` and retry`, ephemeral: true });
         }
         log.error(error.message);
     });
