@@ -1,16 +1,20 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens } from '../global.js';
-import { setNotificationEmbed } from '../notification.js';
-import { executeRelayApiRequest, getLast_testRunId } from '../get_relay.js'
+import { tokens } from '../utils/global.js';
+import { setNotificationEmbed } from '../utils/notification.js';
+import { executeRelayRequest, getLast_testRunId } from '../utils/relay.js';
+import * as log from '../log/log.js';
 
 async function sendLastMouli(interaction, mouliOffset) {
-    const channel_id = tokens[interaction.user.id].channel_id;
+    if (!tokens.hasOwnProperty(interaction.user.id)) {
+        await interaction.reply({ content: `You are not logged in, please /login and retry`, ephemeral: true });
+        return;
+    }
     const email = tokens[interaction.user.id].email;
 
-    executeRelayApiRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
+    executeRelayRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
         if (response.status === 200) {
-            const testRunId = await getLast_testRunId(response.data);
-            const embed = await setNotificationEmbed(response.data.slice(mouliOffset)[0], testRunId);
+            const testRunId = getLast_testRunId(response.data);
+            const embed = setNotificationEmbed(response.data.slice(mouliOffset)[0], testRunId);
             interaction.reply({embeds: embed['embed'], files: embed['files']})
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
@@ -23,6 +27,7 @@ async function sendLastMouli(interaction, mouliOffset) {
         } else {
             await interaction.reply({ content: `Error while trying to get mouli, please /login and retry`, ephemeral: true });
         }
+        log.error(error.message);
     });
 }
 

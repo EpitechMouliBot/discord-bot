@@ -1,9 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens } from '../global.js';
-import { executeBDDApiRequest } from '../get_api.js';
+import { tokens } from '../utils/global.js';
+import { executeDBRequest } from '../utils/api.js';
+import * as log from '../log/log.js';
 
 function setUserIdInDb(id, token, discordUserId) {
-    executeBDDApiRequest('PUT', `/user/id/${id}`, token, {
+    executeDBRequest('PUT', `/user/id/${id}`, token, {
         "user_id": discordUserId
     }).then((response) => {
     }).catch((error) => {
@@ -12,16 +13,16 @@ function setUserIdInDb(id, token, discordUserId) {
 }
 
 async function setTokenLogin(interaction, email, password) {
-    executeBDDApiRequest('POST', `/login`, "", {
+    executeDBRequest('POST', `/login`, "", {
         "email": email,
         "password": password
     }).then(async (response) => {
         if (response.status === 201) {
             tokens[interaction.user.id] = {
                 id: response.data.id,
+                email: email,
                 token: response.data.token
             };
-            console.log("tokens: ", tokens)
             setUserIdInDb(response.data.id, response.data.token, interaction.user.id);
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
         } else {
@@ -31,7 +32,7 @@ async function setTokenLogin(interaction, email, password) {
         }
         response.data;
     }).catch(async (error) => {
-        console.log(error);
+        log.error(error.message);
         await interaction.reply({ content: `Error while trying to login, please retry`, ephemeral: true });
     });
 }

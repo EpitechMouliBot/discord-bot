@@ -1,15 +1,17 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens, loadConfigJson } from '../global.js';
-import { executeBDDApiRequest } from '../get_api.js';
-
-const config = await loadConfigJson();
+import { tokens } from '../utils/global.js';
+import { executeDBRequest } from '../utils/api.js';
 
 async function setChannelIdInDb(interaction, channelId) {
+    if (!tokens.hasOwnProperty(interaction.user.id)) {
+        await interaction.reply({ content: `You are not logged in, please /login and retry`, ephemeral: true });
+        return;
+    }
     const id = tokens[interaction.user.id].id;
     const token = tokens[interaction.user.id].token;
 
-    executeBDDApiRequest('PUT', `/user/id/${id}`, token, {
+    executeDBRequest('PUT', `/user/id/${id}`, token, {
         "channel_id": channelId
     }).then(async (response) => {
         if (response.status === 200) {

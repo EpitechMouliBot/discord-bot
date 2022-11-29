@@ -1,6 +1,5 @@
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { formatDate, calculateSkillsPercent, getCompleteStatus,
-    getCompleteNorme, getCompleteUrl, getAdaptiveColor } from './set_information.js';
+import { formatDate, calculateSkillsPercent, getCompleteStatus, getCompleteNorme, getCompleteUrl, getAdaptiveColor } from './set_information.js';
 
 function createEmbed(title, description, statusContent, normeContent, testUrl, color) {
 
@@ -19,10 +18,10 @@ function createEmbed(title, description, statusContent, normeContent, testUrl, c
     return (embed);
 }
 
-export async function setNotificationEmbed(lastTestRunInfo, testRunId) {
+export function setNotificationEmbed(lastTestRunInfo, testRunId) {
     let title = lastTestRunInfo['project']['name'];
     let percentPassed = calculateSkillsPercent(lastTestRunInfo['results']['skills']);
-    title += ' | ' + percentPassed.toString() + '%]';
+    title += ' | [' + percentPassed.toString() + '%]';
     const description = formatDate(lastTestRunInfo['date']);
     const statusContent = getCompleteStatus(lastTestRunInfo['results']['externalItems']);
     const normeContent = getCompleteNorme(lastTestRunInfo['results']['externalItems']);

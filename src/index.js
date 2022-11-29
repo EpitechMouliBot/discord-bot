@@ -3,7 +3,8 @@ dotenv.config();
 import { Client, Events, Collection, GatewayIntentBits } from 'discord.js';
 import { checkNewTestForEveryUsers } from './check_new_tests.js';
 import { initCommands } from './init_commands.js';
-import { loadConfigJson } from './global.js';
+import { loadConfigJson } from './utils/global.js';
+import * as log from './log/log.js';
 
 const config = await loadConfigJson();
 const token = config.dev ? process.env.DEV_DISCORD_BOT_TOKEN : process.env.FINAL_DISCORD_BOT_TOKEN;
@@ -24,13 +25,13 @@ client.on(Events.InteractionCreate, async (interaction) => {
     const command = interaction.client.commands.get(interaction.commandName);
 
 	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
+		log.error(`No command matching ${interaction.commandName} was found.`);
 		return;
 	}
 	try {
 		await command.execute(interaction);
 	} catch (error) {
-		console.error(error);
+		log.error(error.message);
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
