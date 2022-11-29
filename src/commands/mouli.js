@@ -1,31 +1,21 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, initRequest, loadConfigJson } from '../global.js';
-import { sendNotification } from '../notification.js';
+import { tokens } from '../utils/global.js';
+import { setNotificationEmbed } from '../utils/notification.js';
+import { executeRelayRequest, getLast_testRunId } from '../utils/relay.js';
 import * as log from '../log/log.js';
 
-const config = await loadConfigJson();
-
-function get_last_testRunId(data) {
-    if (data.length < 1)
-        return (0);
-    const lastTest = data.slice(-1)[0];
-    const testRunId = lastTest['results']['testRunId'];
-    return (testRunId);
-}
-
 async function sendLastMouli(interaction, mouliOffset) {
-    const id = tokens[interaction.user.id].id;
+    if (!tokens.hasOwnProperty(interaction.user.id)) {
+        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
+        return;
+    }
     const email = tokens[interaction.user.id].email;
 
-    // await interaction.reply({ content: `Command not yet supported` });
-
-    initRequest('GET', `${config.relay_host}/${email}/epitest/me/2021`).then(async (response) => {
+    executeRelayRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
         if (response.status === 200) {
-            const testRunId = get_last_testRunId(response.data);
-            const userInfo = {
-                channel_id: interaction.channelId
-            }
-            sendNotification(interaction.client, userInfo, response.data.slice(mouliOffset)[0], testRunId); //TODO recoder la fonction
+            const testRunId = getLast_testRunId(response.data);
+            const embed = setNotificationEmbed(response.data.slice(mouliOffset)[0], testRunId);
+            interaction.reply({embeds: embed['embed'], files: embed['files']})
         } else {
             let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
             log.error(messageRes);
@@ -35,8 +25,9 @@ async function sendLastMouli(interaction, mouliOffset) {
         if (error.code === 'ECONNREFUSED') {
             await interaction.reply({ content: `Error while trying to get mouli`, ephemeral: true });
         } else {
-            await interaction.reply({ content: `Error while trying to get mouli, please /login and retry`, ephemeral: true });
+            await interaction.reply({ content: `Error while trying to get mouli, please \`/login\` and retry`, ephemeral: true });
         }
+        log.error(error.message);
     });
 }
 

@@ -1,12 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, initRequest, loadConfigJson } from '../global.js';
+import { tokens } from '../utils/global.js';
+import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
-const config = await loadConfigJson();
-
 function setUserIdInDb(id, token, discordUserId) {
-    initRequest('PUT', `${config.apidb_host}/user/id/${id}`, token, {
-        "server_id": discordUserId //TODO changer server_id en user_id
+    executeDBRequest('PUT', `/user/id/${id}`, token, {
+        "user_id": discordUserId
     }).then((response) => {
     }).catch((error) => {
         log.error(error);
@@ -14,13 +13,14 @@ function setUserIdInDb(id, token, discordUserId) {
 }
 
 async function setTokenLogin(interaction, email, password) {
-    initRequest('POST', `${config.apidb_host}/login`, "", {
+    executeDBRequest('POST', `/login`, "", {
         "email": email,
         "password": password
     }).then(async (response) => {
         if (response.status === 201) {
             tokens[interaction.user.id] = {
                 id: response.data.id,
+                email: email,
                 token: response.data.token
             };
             setUserIdInDb(response.data.id, response.data.token, interaction.user.id);
@@ -32,7 +32,7 @@ async function setTokenLogin(interaction, email, password) {
         }
         response.data;
     }).catch(async (error) => {
-        log.error(error);
+        log.error(error.message);
         await interaction.reply({ content: `Error while trying to login, please retry`, ephemeral: true });
     });
 }

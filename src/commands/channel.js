@@ -1,15 +1,18 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens, initRequest, loadConfigJson } from '../global.js';
+import { tokens } from '../utils/global.js';
+import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
-const config = await loadConfigJson();
-
 async function setChannelIdInDb(interaction, channelId) {
+    if (!tokens.hasOwnProperty(interaction.user.id)) {
+        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
+        return;
+    }
     const id = tokens[interaction.user.id].id;
     const token = tokens[interaction.user.id].token;
 
-    initRequest('PUT', `${config.apidb_host}/user/id/${id}`, token, {
+    executeDBRequest('PUT', `/user/id/${id}`, token, {
         "channel_id": channelId
     }).then(async (response) => {
         if (response.status === 200) {
@@ -21,7 +24,7 @@ async function setChannelIdInDb(interaction, channelId) {
         }
     }).catch(async (error) => {
         if (error.code === 'ERR_BAD_REQUEST') {
-            await interaction.reply({ content: `Error while trying to set command, please /login and retry`, ephemeral: true });
+            await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
         } else {
             await interaction.reply({ content: `Error while trying to set command`, ephemeral: true });
         }

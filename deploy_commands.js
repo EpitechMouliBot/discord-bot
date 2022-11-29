@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs';
-import { loadConfigJson } from './src/global.js';
+import { loadConfigJson } from './src/utils/global.js';
 import * as log from './src/log/log.js';
 
 const config = await loadConfigJson();
@@ -38,6 +38,6 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 		log.success(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
-		console.error(error);
+		log.error(error.message);
 	}
 })();
