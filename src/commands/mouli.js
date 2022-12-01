@@ -1,14 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens } from '../utils/global.js';
+import { tokens, errorHandlingTokens } from '../utils/global.js';
 import { setNotificationEmbed } from '../utils/notification.js';
 import { executeRelayRequest, getLast_testRunId } from '../utils/relay.js';
 import * as log from '../log/log.js';
 
 async function sendLastMouli(interaction, mouliOffset) {
-    if (!tokens.hasOwnProperty(interaction.user.id)) {
-        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
-        return;
-    }
+    if (!errorHandlingTokens(interaction)) return;
     const email = tokens[interaction.user.id].email;
 
     executeRelayRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {

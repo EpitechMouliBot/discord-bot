@@ -1,14 +1,11 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens } from '../utils/global.js';
+import { tokens, errorHandlingTokens } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
 async function setChannelIdInDb(interaction, channelId) {
-    if (!tokens.hasOwnProperty(interaction.user.id)) {
-        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
-        return;
-    }
+    if (!errorHandlingTokens(interaction)) return;
     const id = tokens[interaction.user.id].id;
     const token = tokens[interaction.user.id].token;
 

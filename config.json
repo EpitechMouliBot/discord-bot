@@ -4,5 +4,6 @@
     "dev_client_id": "1034249083717697536",
     "dev_server_id": "900729668297162782",
     "apidb_host": "http://127.0.0.1:3000",
-    "relay_host": "http://127.0.0.1:8090"
+    "relay_host": "http://127.0.0.1:8090",
+    "repo_issues_url": "https://github.com/EpitechMouliBot/discord-bot/issues"
 }
