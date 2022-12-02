@@ -1,14 +1,27 @@
 import { Colors } from './colors.js';
 import dateFormat from "dateformat";
+import * as fs from 'fs';
 
 const col = new Colors();
 
 export function reset_log_file() {
-    //TODO
+    const logFile = `./logs/latest.log`;
+    if (!fs.existsSync(logFile)) return;
+    let date = new Date().toLocaleString();
+    date = dateFormat(date, "yyyy-dd-mm_HH-MM-ss");
+    fs.renameSync(logFile, `./logs/${date}.log`);
+}
+
+function createLogFolder() {
+    const dir = './logs';
+    if (!fs.existsSync(dir))
+        fs.mkdirSync(dir);
 }
 
 async function write_in_file(message) {
-    //TODO
+    const filePath = './logs/latest.log';
+    createLogFolder();
+    fs.appendFileSync(filePath, message + '\n');
 }
 
 function print_color(color, message) {
@@ -20,54 +33,58 @@ function getCurrentDate() {
     return dateFormat(date, "mm/dd/yyyy HH:MM:ss");
 }
 
-export function log(message) {
-    const date = getCurrentDate();
-    const type = `[LOG]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    console.log(res);
+function getCallFile(fromGlobalFunction) {
+    let num = fromGlobalFunction ? 5 : 4;
+    return (new Error()).stack.split("\n")[num].trim().split("discord-bot/")[1].split(')')[0];
 }
-export function info(message) {
+
+function formatMessageText(type, message, fromGlobalFunction) {
     const date = getCurrentDate();
-    const type = `[INFO]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_BLUE, res);
+    type = `[${type}]`;
+    return `${date.padEnd(21)}${type.padEnd(11)}${getCallFile(fromGlobalFunction).padEnd(40)}${message}`;
 }
-export function debug(message) {
-    const date = getCurrentDate();
-    const type = `[DEBUG]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_BLACK, res);
+
+export function log(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`LOG`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        console.log(message);
 }
-export function success(message) {
-    const date = getCurrentDate();
-    const type = `[SUCCESS]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_GREEN, res);
+export function info(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`INFO`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_BLUE, message);
 }
-export function warning(message) {
-    const date = getCurrentDate();
-    const type = `[WARN]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_YELLOW, res);
+export function debug(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`DEBUG`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_BLACK, message);
 }
-export function error(message) {
-    const date = getCurrentDate();
-    const type = `[ERROR]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_RED, res);
+export function success(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`SUCCESS`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_GREEN, message);
 }
-export function critical(message) {
-    const date = getCurrentDate();
-    const type = `[CRIT]`;
-    const res = `${date.padEnd(21)}${type.padEnd(11)}${message}`;
-    write_in_file(res);
-    print_color(col.BOLD_PURPLE, res);
+export function warning(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`WARN`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_YELLOW, message);
+}
+export function error(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`ERROR`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_RED, message);
+}
+export function critical(message, showInConsole = true, fromGlobalFunction = false) {
+    message = formatMessageText(`CRIT`, message, fromGlobalFunction);
+    write_in_file(message);
+    if (showInConsole)
+        print_color(col.BOLD_PURPLE, message);
 }
 
 // info("oui");
