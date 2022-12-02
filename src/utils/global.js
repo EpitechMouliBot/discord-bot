@@ -1,4 +1,6 @@
+import { EmbedBuilder, WebhookClient } from 'discord.js';
 import { readFile } from 'fs/promises';
+import * as log from '../log/log.js';
 
 export let tokens = {};
 
@@ -12,4 +14,26 @@ export async function errorHandlingTokens(interaction) {
 
 export async function loadConfigJson() {
     return JSON.parse(await readFile(new URL('../../config.json', import.meta.url)));
+}
+
+function sendWebhook(errorMessage) {
+    if (process.env.WEBHOOK_URL === "") return;
+    const webhookClient = new WebhookClient({ url: process.env.WEBHOOK_URL });
+
+    const embed = new EmbedBuilder()
+        .setTitle('New error detected')
+        .setColor(0xFF0000)
+        .setDescription(errorMessage);
+
+    webhookClient.send({
+        content: '@everyone New error detected',
+        username: 'EpitechMouliBot Errors',
+        embeds: [embed],
+    });
+}
+
+export function sendError(errorObj) {
+    log.error(errorObj.message, true, true);
+    log.debug(JSON.stringify(errorObj, null, 4), false, true);
+    sendWebhook(errorObj.message);
 }

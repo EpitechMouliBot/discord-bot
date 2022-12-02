@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens, errorHandlingTokens, loadConfigJson } from '../utils/global.js';
+import { tokens, errorHandlingTokens, loadConfigJson, sendError } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
@@ -18,7 +18,7 @@ async function setChannelIdInDb(interaction, channelId) {
             await interaction.reply({ content: `Channel successfully defined to <#${channelId}>`, ephemeral: true });
         }
     }).catch(async (error) => {
-        log.error(error.message);
+        sendError(error);
         if (!error.response)
             await interaction.reply({ content: `Failed to set channel, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
         else

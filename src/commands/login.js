@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, loadConfigJson } from '../utils/global.js';
+import { tokens, loadConfigJson, sendError } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
@@ -8,9 +8,8 @@ const config = await loadConfigJson();
 function setUserIdInDb(id, token, discordUserId) {
     executeDBRequest('PUT', `/user/id/${id}`, token, {
         "user_id": discordUserId
-    }).then((response) => {
     }).catch((error) => {
-        log.error(error);
+        sendError(error);
     });
 }
 
@@ -30,7 +29,7 @@ async function setTokenLogin(interaction, email, password) {
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
         }
     }).catch(async (error) => {
-        log.error(error.message);
+        sendError(error);
         if (!error.response)
             await interaction.reply({ content: `Failed to login, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
         else

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens, errorHandlingTokens, loadConfigJson } from '../utils/global.js';
+import { tokens, errorHandlingTokens, loadConfigJson, sendError } from '../utils/global.js';
 import { setNotificationEmbed } from '../utils/notification.js';
 import { executeRelayRequest, getLast_testRunId } from '../utils/relay.js';
 import * as log from '../log/log.js';
@@ -17,7 +17,7 @@ async function sendLastMouli(interaction, mouliOffset) {
             interaction.reply({embeds: embed['embed'], files: embed['files']})
         }
     }).catch(async (error) => {
-        log.error(error.message);
+        sendError(error);
         if (!error.response)
             await interaction.reply({ content: `Failed to get mouli, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
         else

@@ -25,7 +25,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 (async () => {
 	try {
-		log.info(`Started refreshing ${commands.length} application (/) commands.`);
+		console.log(`Started refreshing ${commands.length} application (/) commands.`);
 
 		const data = config.dev ?
 			await rest.put(
@@ -36,8 +36,8 @@ const rest = new REST({ version: '10' }).setToken(token);
 				{ body: commands },
 			);
 
-		log.success(`Successfully reloaded ${data.length} application (/) commands.`);
+		console.log(`Successfully reloaded ${data.length} application (/) commands.`);
 	} catch (error) {
-		log.error(error.message);
+		console.error(error.message);
 	}
 })();
