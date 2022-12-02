@@ -32,11 +32,18 @@ async function setTokenLogin(interaction, email, password) {
     }).catch(async (error) => {
         log.error(error.message);
         if (!error.response)
-            await interaction.reply({ content: `Failed to login, sorry for the inconvenience`, ephemeral: true });
-        else if (error.response.status === 400)
-            await interaction.reply({ content: `Bad credentials, please retry`, ephemeral: true });
-        else if (error.response.status === 500)
-            await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+            await interaction.reply({ content: `Failed to login, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+        else
+            switch (error.response.status) {
+                case 400:
+                    await interaction.reply({ content: `Bad credentials, please retry`, ephemeral: true });
+                    break;
+                case 500:
+                    await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+                    break;
+                default:
+                    await interaction.reply({ content: `Error while trying to login, sorry`, ephemeral: true });
+            }
     });
 }
 
