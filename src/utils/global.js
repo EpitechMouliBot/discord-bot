@@ -18,18 +18,26 @@ export async function loadConfigJson() {
 
 function sendWebhook(errorMessage) {
     if (process.env.WEBHOOK_URL === "") return;
-    const webhookClient = new WebhookClient({ url: process.env.WEBHOOK_URL });
 
     const embed = new EmbedBuilder()
         .setTitle('New error detected')
         .setColor(0xFF0000)
         .setDescription(errorMessage);
 
-    webhookClient.send({
-        content: '@everyone New error detected',
-        username: 'EpitechMouliBot Errors',
-        embeds: [embed],
-    });
+    try {
+        const webhookClient = new WebhookClient({ url: process.env.WEBHOOK_URL });
+        webhookClient.send({
+            content: '@everyone New error detected',
+            username: 'EpitechMouliBot Errors',
+            embeds: [embed],
+        }).catch((error) => {
+            log.error(error.message);
+            log.debug(JSON.stringify(error, null, 4), false);
+        });
+    } catch (error) {
+        log.error(error.message);
+        log.debug(JSON.stringify(error, null, 4), false);
+    }
 }
 
 export function sendError(errorObj) {
