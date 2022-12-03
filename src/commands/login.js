@@ -1,14 +1,15 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { tokens } from '../utils/global.js';
+import { tokens, loadConfigJson, sendError } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
+
+const config = await loadConfigJson();
 
 function setUserIdInDb(id, token, discordUserId) {
     executeDBRequest('PUT', `/user/id/${id}`, token, {
         "user_id": discordUserId
-    }).then((response) => {
     }).catch((error) => {
-        log.error(error);
+        sendError(error);
     });
 }
 
@@ -23,17 +24,25 @@ async function setTokenLogin(interaction, email, password) {
                 email: email,
                 token: response.data.token
             };
+            console.log(tokens);
             setUserIdInDb(response.data.id, response.data.token, interaction.user.id);
             await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
-        } else {
-            let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            log.error(messageRes);
-            await interaction.reply({ content: messageRes, ephemeral: true });
         }
-        response.data;
     }).catch(async (error) => {
-        log.error(error.message);
-        await interaction.reply({ content: `Error while trying to login, please retry`, ephemeral: true });
+        sendError(error);
+        if (!error.response)
+            await interaction.reply({ content: `Failed to login, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+        else
+            switch (error.response.status) {
+                case 400:
+                    await interaction.reply({ content: `Bad credentials, please retry`, ephemeral: true });
+                    break;
+                case 500:
+                    await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+                    break;
+                default:
+                    await interaction.reply({ content: `Error while trying to login, sorry`, ephemeral: true });
+            }
     });
 }
 

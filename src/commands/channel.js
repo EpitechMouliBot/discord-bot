@@ -1,14 +1,13 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord-api-types/v10';
-import { tokens } from '../utils/global.js';
+import { tokens, errorHandlingTokens, loadConfigJson, sendError } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import * as log from '../log/log.js';
 
+const config = await loadConfigJson();
+
 async function setChannelIdInDb(interaction, channelId) {
-    if (!tokens.hasOwnProperty(interaction.user.id)) {
-        await interaction.reply({ content: `You are not logged in, please \`/login\` and retry`, ephemeral: true });
-        return;
-    }
+    if (!await errorHandlingTokens(interaction)) return;
     const id = tokens[interaction.user.id].id;
     const token = tokens[interaction.user.id].token;
 
@@ -17,17 +16,25 @@ async function setChannelIdInDb(interaction, channelId) {
     }).then(async (response) => {
         if (response.status === 200) {
             await interaction.reply({ content: `Channel successfully defined to <#${channelId}>`, ephemeral: true });
-        } else {
-            let messageRes = `Error ${response.status} when sending request: ${response.statusText}`;
-            log.error(messageRes);
-            await interaction.reply({ content: messageRes, ephemeral: true });
         }
     }).catch(async (error) => {
-        if (error.code === 'ERR_BAD_REQUEST') {
-            await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
-        } else {
-            await interaction.reply({ content: `Error while trying to set command`, ephemeral: true });
-        }
+        sendError(error);
+        if (!error.response)
+            await interaction.reply({ content: `Failed to set channel, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+        else
+            switch (error.response.status) {
+                case 403:
+                    await interaction.reply({ content: `Authorization denied, please \`/login\` and retry`, ephemeral: true });
+                    break;
+                case 400:
+                    await interaction.reply({ content: `Bad parameter, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+                    break;
+                case 500:
+                    await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+                    break;
+                default:
+                    await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
+            }
     });
 }
 
