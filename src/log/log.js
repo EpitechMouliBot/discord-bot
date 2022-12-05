@@ -86,11 +86,3 @@ export function critical(message, showInConsole = true, fromGlobalFunction = fal
     if (showInConsole)
         print_color(col.BOLD_PURPLE, message);
 }
-
-// info("oui");
-// debug("oui");
-// success("oui");
-// warning("oui");
-// error("oui");
-// critical("oui");
-// log("test");
