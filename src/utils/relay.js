@@ -1,12 +1,9 @@
 import axios from 'axios';
-import { loadConfigJson } from './global.js';
-
-const config = await loadConfigJson();
 
 export function executeRelayRequest(method, endpoint) {
     return axios({
         method: method,
-        url: config.relay_host + endpoint,
+        url: process.env.RELAY_HOST + endpoint,
     });
 }
 
