@@ -8,7 +8,7 @@ export function reset_log_file() {
     const logFile = `./logs/latest.log`;
     if (!fs.existsSync(logFile)) return;
     let date = new Date().toLocaleString();
-    date = dateFormat(date, "yyyy-dd-mm_HH-MM-ss");
+    date = dateFormat(date, "yyyy-mm-dd_HH-MM-ss");
     fs.renameSync(logFile, `./logs/${date}.log`);
 }
 
@@ -30,7 +30,7 @@ function print_color(color, message) {
 
 function getCurrentDate() {
     const date = new Date().toLocaleString();
-    return dateFormat(date, "mm/dd/yyyy HH:MM:ss");
+    return dateFormat(date, "dd/mm/yyyy HH:MM:ss");
 }
 
 function getCallFile(fromGlobalFunction) {

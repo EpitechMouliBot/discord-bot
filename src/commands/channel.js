@@ -35,7 +35,7 @@ async function setChannelIdInDb(interaction, channelId) {
                     await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
                     break;
                 default:
-                    await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
+                    await interaction.reply({ content: `Error while trying to set channel, please \`/login\` and retry`, ephemeral: true });
             }
         }
     });

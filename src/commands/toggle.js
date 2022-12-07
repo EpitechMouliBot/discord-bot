@@ -8,7 +8,7 @@ const config = await loadConfigJson();
 async function errorHandlingRequests(error, interaction) {
     if (!error.response) {
         sendError(error);
-        await interaction.reply({ content: `Failed to set channel, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+        await interaction.reply({ content: `Failed to toggle notifications, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
     } else {
         if (error.response.status !== 403)
             sendError(error);
@@ -23,7 +23,7 @@ async function errorHandlingRequests(error, interaction) {
                 await interaction.reply({ content: `Internal server error, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
                 break;
             default:
-                await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
+                await interaction.reply({ content: `Error while trying to toggle notifications, please \`/login\` and retry`, ephemeral: true });
         }
     }
 }
