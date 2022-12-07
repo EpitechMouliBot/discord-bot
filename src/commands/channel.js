@@ -18,10 +18,12 @@ async function setChannelIdInDb(interaction, channelId) {
             await interaction.reply({ content: `Channel successfully defined to <#${channelId}>`, ephemeral: true });
         }
     }).catch(async (error) => {
-        sendError(error);
-        if (!error.response)
+        if (!error.response) {
+            sendError(error);
             await interaction.reply({ content: `Failed to set channel, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
-        else
+        } else {
+            if (error.response.status !== 403)
+                sendError(error);
             switch (error.response.status) {
                 case 403:
                     await interaction.reply({ content: `Authorization denied, please \`/login\` and retry`, ephemeral: true });
@@ -35,6 +37,7 @@ async function setChannelIdInDb(interaction, channelId) {
                 default:
                     await interaction.reply({ content: `Error while trying to set command, please \`/login\` and retry`, ephemeral: true });
             }
+        }
     });
 }
 
