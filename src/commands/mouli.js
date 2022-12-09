@@ -17,10 +17,12 @@ async function sendLastMouli(interaction, mouliOffset) {
             interaction.reply({embeds: embed['embed'], files: embed['files']})
         }
     }).catch(async (error) => {
-        sendError(error);
-        if (!error.response)
+        if (!error.response) {
+            sendError(error);
             await interaction.reply({ content: `Failed to get mouli, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
-        else
+        } else {
+            if (error.response.status !== 403)
+                sendError(error);
             switch (error.response.status) {
                 case 403:
                     await interaction.reply({ content: `Authorization denied, please \`/login\` and retry`, ephemeral: true });
@@ -31,6 +33,7 @@ async function sendLastMouli(interaction, mouliOffset) {
                 default:
                     await interaction.reply({ content: `Error while trying to get mouli, please \`/login\` and retry`, ephemeral: true });
             }
+        }
     });
 }
 

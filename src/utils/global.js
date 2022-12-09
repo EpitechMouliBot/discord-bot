@@ -40,7 +40,7 @@ function sendWebhook(errorMessage) {
     }
 }
 
-export function sendError(errorObj) {
+export async function sendError(errorObj) {
     log.error(errorObj.message, true, true);
     log.debug(JSON.stringify(errorObj, null, 4), false, true);
     sendWebhook(errorObj.message);
