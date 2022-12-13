@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { sendError } from './global.js';
 
 export function executeRelayRequest(method, endpoint) {
     return axios({

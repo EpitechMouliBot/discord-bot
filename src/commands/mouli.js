@@ -58,7 +58,6 @@ export let command = {
         if (number > 0)
             number *= -1;
         let actualYears = new Date().getFullYear();
-        actualYears = 2024;
         await sendLastMouli(interaction, number, actualYears);
 	}
 };
