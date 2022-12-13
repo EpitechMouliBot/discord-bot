@@ -38,7 +38,7 @@ async function checkForOneUser(client, userInfo, years) {
     executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/${years}`).then(async (rsp) => {
         const relayData = rsp.data;
         let actualYears =  new Date().getFullYear();
-        if (relayData === undefined || relayData.length < 1 && actualYears >= years - 10) // TODO if no mouli find beforo 10 years
+        if (relayData === undefined || relayData.length < 1 && actualYears >= years - 10) // TODO if no mouli find before 10 years
             checkForOneUser(client, userInfo, years - 1);
         const testRunId = getLast_testRunId(relayData);
         if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
@@ -53,7 +53,7 @@ export async function checkNewTestForEveryUsers(client) {
     let actualYears;
 
 	while (true) {
-        actualYears =  new Date().getFullYear();
+        actualYears = new Date().getFullYear();
         executeDBRequest('GET', "/user/status/ok", process.env.API_DB_TOKEN).then(async (rsp) => {
             const userList = rsp.data;
             for (let i = 0; i < userList.length; i++)
