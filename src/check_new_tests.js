@@ -31,11 +31,15 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId)
     return (0);
 }
 
-async function checkForOneUser(client, userInfo) {
+async function checkForOneUser(client, userInfo, years) {
     if (userInfo['discord_status'] === 0)
         return;
-    executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/2021`).then(async (rsp) => {
+
+    executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/${years}`).then(async (rsp) => {
         const relayData = rsp.data;
+        let actualYears = new Date().getFullYear();
+        if (relayData === undefined || relayData.length < 1 && years >= actualYears - 10)
+            checkForOneUser(client, userInfo, years - 1);
         const testRunId = getLast_testRunId(relayData);
         if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
             await sendNotif(client, relayData, userInfo, testRunId, userInfo.last_testRunId);
@@ -46,12 +50,14 @@ async function checkForOneUser(client, userInfo) {
 
 export async function checkNewTestForEveryUsers(client) {
     let lastCatchedError = new Date(0);
+    let actualYears;
 
 	while (true) {
+        actualYears = new Date().getFullYear();
         executeDBRequest('GET', "/user/status/ok", process.env.API_DB_TOKEN).then(async (rsp) => {
             const userList = rsp.data;
             for (let i = 0; i < userList.length; i++)
-                await checkForOneUser(client, userList[i]);
+                await checkForOneUser(client, userList[i], actualYears);
         }).catch((error) => {
             const currentDate = new Date();
             if (millisecondToMinute(currentDate) - millisecondToMinute(lastCatchedError) >= 2)

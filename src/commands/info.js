@@ -8,7 +8,6 @@ import * as log from '../log/log.js';
 const config = await loadConfigJson();
 
 function createEmbed(userInfos) {
-    console.log(userInfos);
     const embed = new EmbedBuilder()
     .setTitle('Your account')
     .addFields(

@@ -2,19 +2,24 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { tokens, errorHandlingTokens, loadConfigJson, sendError } from '../utils/global.js';
 import { setNotificationEmbed } from '../utils/notification.js';
 import { executeRelayRequest, getLast_testRunId } from '../utils/relay.js';
-import * as log from '../log/log.js';
 
 const config = await loadConfigJson();
 
-async function sendLastMouli(interaction, mouliOffset) {
+async function sendLastMouli(interaction, mouliOffset, years) {
     if (!await errorHandlingTokens(interaction)) return;
     const email = tokens[interaction.user.id].email;
 
-    executeRelayRequest('GET', `/${email}/epitest/me/2021`).then(async (response) => {
+    executeRelayRequest('GET', `/${email}/epitest/me/${years}`).then(async (response) => {
         if (response.status === 200) {
-            const testRunId = getLast_testRunId(response.data);
-            const embed = setNotificationEmbed(response.data.slice(mouliOffset)[0], testRunId);
-            interaction.reply({embeds: embed['embed'], files: embed['files']})
+            const relayData = response.data;
+            let actualYears =  new Date().getFullYear();
+            if (relayData === undefined || relayData.length < 1 && years >= actualYears - 10)
+                sendLastMouli(interaction, mouliOffset, years - 1);
+            else {
+                const testRunId = getLast_testRunId(relayData);
+                const embed = setNotificationEmbed(relayData.slice(mouliOffset)[0], testRunId);
+                interaction.reply({embeds: embed['embed'], files: embed['files']})
+            }
         }
     }).catch(async (error) => {
         if (!error.response) {
@@ -52,6 +57,7 @@ export let command = {
             number = 1;
         if (number > 0)
             number *= -1;
-        await sendLastMouli(interaction, number);
+        let actualYears = new Date().getFullYear();
+        await sendLastMouli(interaction, number, actualYears);
 	}
 };
