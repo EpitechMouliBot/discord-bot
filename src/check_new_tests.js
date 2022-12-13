@@ -37,8 +37,8 @@ async function checkForOneUser(client, userInfo, years) {
 
     executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/${years}`).then(async (rsp) => {
         const relayData = rsp.data;
-        let actualYears =  new Date().getFullYear();
-        if (relayData === undefined || relayData.length < 1 && actualYears >= years - 10) // TODO if no mouli find before 10 years
+        let actualYears = new Date().getFullYear();
+        if (relayData === undefined || relayData.length < 1 && years >= actualYears - 10)
             checkForOneUser(client, userInfo, years - 1);
         const testRunId = getLast_testRunId(relayData);
         if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
