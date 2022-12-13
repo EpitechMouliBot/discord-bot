@@ -13,7 +13,7 @@ async function sendLastMouli(interaction, mouliOffset, years) {
         if (response.status === 200) {
             const relayData = response.data;
             let actualYears =  new Date().getFullYear();
-            if (relayData === undefined || relayData.length < 1 && actualYears >= years - 10)
+            if (relayData === undefined || relayData.length < 1 && years >= actualYears - 10)
                 sendLastMouli(interaction, mouliOffset, years - 1);
             else {
                 const testRunId = getLast_testRunId(relayData);
@@ -58,6 +58,7 @@ export let command = {
         if (number > 0)
             number *= -1;
         let actualYears = new Date().getFullYear();
+        actualYears = 2024;
         await sendLastMouli(interaction, number, actualYears);
 	}
 };
