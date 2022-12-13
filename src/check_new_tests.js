@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { executeDBRequest } from './utils/api.js';
-import { executeRelayRequest, getLast_testRunId } from './utils/relay.js';
+import { getLast_test } from './utils/relay.js';
 import { setNotificationEmbed } from './utils/notification.js';
 import { sendError } from './utils/global.js';
 
@@ -11,13 +11,18 @@ function millisecondToMinute(milliseconds) {
     return milliseconds / 60000;
 }
 
+function getActualYears() {
+    return new Date().getFullYear();
+}
+
 async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId) {
     var statusDiscord = 1;
     try {
         const channel = await client.channels.fetch(userInfo['channel_id']);
-        const embed = setNotificationEmbed(relayData.slice(-1)[0], testRunId);
+        const embed = setNotificationEmbed(relayData, testRunId);
         await channel.send({content:`<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files']});
     } catch (error) {
+        console.log(error)
         statusDiscord = 0;
     }
     if (statusDiscord === 0)
@@ -33,15 +38,12 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId)
 
 async function checkForOneUser(client, userInfo) {
     if (userInfo['discord_status'] === 0)
-        return;
-    executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/2021`).then(async (rsp) => {
-        const relayData = rsp.data;
-        const testRunId = getLast_testRunId(relayData);
-        if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
-            await sendNotif(client, relayData, userInfo, testRunId, userInfo.last_testRunId);
-    }).catch((error) => {
-        sendError(error);
-    });
+    return;
+    const years = getActualYears();
+    let lastTest = await getLast_test(userInfo['email'], years);
+    const testRunId = lastTest['results']['testRunId'];
+    if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
+        await sendNotif(client, lastTest, userInfo, testRunId, userInfo.last_testRunId);
 }
 
 export async function checkNewTestForEveryUsers(client) {
