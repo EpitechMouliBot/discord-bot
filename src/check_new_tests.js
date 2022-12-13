@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { executeDBRequest } from './utils/api.js';
-import { getLast_test } from './utils/relay.js';
+import { executeRelayRequest, getLast_testRunId } from './utils/relay.js';
 import { setNotificationEmbed } from './utils/notification.js';
 import { sendError } from './utils/global.js';
 
@@ -11,18 +11,13 @@ function millisecondToMinute(milliseconds) {
     return milliseconds / 60000;
 }
 
-function getActualYears() {
-    return new Date().getFullYear();
-}
-
 async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId) {
     var statusDiscord = 1;
     try {
         const channel = await client.channels.fetch(userInfo['channel_id']);
-        const embed = setNotificationEmbed(relayData, testRunId);
+        const embed = setNotificationEmbed(relayData.slice(-1)[0], testRunId);
         await channel.send({content:`<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files']});
     } catch (error) {
-        console.log(error)
         statusDiscord = 0;
     }
     if (statusDiscord === 0)
@@ -36,24 +31,33 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId)
     return (0);
 }
 
-async function checkForOneUser(client, userInfo) {
+async function checkForOneUser(client, userInfo, years) {
     if (userInfo['discord_status'] === 0)
-    return;
-    const years = getActualYears();
-    let lastTest = await getLast_test(userInfo['email'], years);
-    const testRunId = lastTest['results']['testRunId'];
-    if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
-        await sendNotif(client, lastTest, userInfo, testRunId, userInfo.last_testRunId);
+        return;
+
+    executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/${years}`).then(async (rsp) => {
+        const relayData = rsp.data;
+        let actualYears =  new Date().getFullYear();
+        if (relayData === undefined || relayData.length < 1 && actualYears >= years - 10) // TODO if no mouli find beforo 10 years
+            checkForOneUser(client, userInfo, years - 1);
+        const testRunId = getLast_testRunId(relayData);
+        if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
+            await sendNotif(client, relayData, userInfo, testRunId, userInfo.last_testRunId);
+    }).catch((error) => {
+        sendError(error);
+    });
 }
 
 export async function checkNewTestForEveryUsers(client) {
     let lastCatchedError = new Date(0);
+    let actualYears;
 
 	while (true) {
+        actualYears =  new Date().getFullYear();
         executeDBRequest('GET', "/user/status/ok", process.env.API_DB_TOKEN).then(async (rsp) => {
             const userList = rsp.data;
             for (let i = 0; i < userList.length; i++)
-                await checkForOneUser(client, userList[i]);
+                await checkForOneUser(client, userList[i], actualYears);
         }).catch((error) => {
             const currentDate = new Date();
             if (millisecondToMinute(currentDate) - millisecondToMinute(lastCatchedError) >= 2)
