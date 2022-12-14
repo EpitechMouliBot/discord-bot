@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
-import * as log from './log/log.js';
+import * as log from 'nodejs-log-utils';
 
 export async function initCommands(client) {
     const __dirname = dirname(fileURLToPath(import.meta.url));
