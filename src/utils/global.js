@@ -1,6 +1,6 @@
 import { EmbedBuilder, WebhookClient } from 'discord.js';
 import { readFile } from 'fs/promises';
-import * as log from '../log/log.js';
+import * as log from 'nodejs-log-utils';
 
 export let tokens = {};
 

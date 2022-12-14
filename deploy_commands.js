@@ -3,7 +3,7 @@ dotenv.config();
 import { REST, Routes } from 'discord.js';
 import * as fs from 'node:fs';
 import { loadConfigJson } from './src/utils/global.js';
-import * as log from './src/log/log.js';
+import * as log from 'nodejs-log-utils';
 
 const config = await loadConfigJson();
 

@@ -3,7 +3,6 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { tokens, errorHandlingTokens, loadConfigJson, sendError } from '../utils/global.js';
 import { executeDBRequest } from '../utils/api.js';
 import dateFormat from "dateformat";
-import * as log from '../log/log.js';
 
 const config = await loadConfigJson();
 

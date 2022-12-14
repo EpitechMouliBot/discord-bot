@@ -5,7 +5,8 @@
     "dateformat": "^5.0.3",
     "discord.js": "^14.6.0",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "nodejs-log-utils": "^1.0.5"
   },
   "name": "discord-bot",
   "description": "<h1 align=\"center\">Epitech Mouli Bot</h1>",

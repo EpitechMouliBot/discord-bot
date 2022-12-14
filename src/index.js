@@ -4,9 +4,9 @@ import { Client, Events, Collection, GatewayIntentBits } from 'discord.js';
 import { checkNewTestForEveryUsers } from './check_new_tests.js';
 import { initCommands } from './init_commands.js';
 import { loadConfigJson, sendError } from './utils/global.js';
-import * as log from './log/log.js';
+import * as log from 'nodejs-log-utils';
 
-log.reset_log_file();
+log.resetLogFile();
 
 const config = await loadConfigJson();
 const token = config.dev ? process.env.DEV_DISCORD_BOT_TOKEN : process.env.FINAL_DISCORD_BOT_TOKEN;
