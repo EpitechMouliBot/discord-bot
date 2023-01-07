@@ -1,23 +1,15 @@
-export function formatDate(date) {
-    var dateG = new Date(date);
-    var second = '' + dateG.getSeconds();
-    var minute = '' + dateG.getMinutes();
-    var hour = '' + dateG.getUTCHours();
-    var day = '' + dateG.getDate();
-    var month = '' + (dateG.getMonth() + 1);
-    var year = dateG.getFullYear();
-
-    if (month.length < 2)
-        month = '0' + month;
-    if (day.length < 2)
-        day = '0' + day;
-    if (second.length < 2)
-        second = '0' + second;
-    if (minute.length < 2)
-        minute = '0' + minute;
-    if (hour.length < 2)
-        hour = '0' + hour;
-    return [day, month, year].join('/') + ' ' + [hour, minute, second].join(':');
+export function formatDate(dateString) {
+    const date = new Date(dateString);
+    date.setDate(date.getDate() + 1);
+    const formattedDateString = date.toLocaleDateString("fr-FR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+    });
+    return (formattedDateString)
 }
 
 export function calculateSkillsPercent(skills) {
