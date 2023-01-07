@@ -13,8 +13,16 @@ async function sendLastMouli(interaction, mouliOffset, years) {
         if (response.status === 200) {
             const relayData = response.data;
             let actualYears =  new Date().getFullYear();
-            if (relayData === undefined || relayData.length < 1 && years >= actualYears - 10)
-                sendLastMouli(interaction, mouliOffset, years - 1);
+            if (relayData === undefined) {
+                await interaction.reply({ content: `Failed to get mouli, please report issue at <${config.repo_issues_url}> (please provide as much informations as you can)`, ephemeral: true });
+                return;
+            }
+            if (years < actualYears - 10) {
+                await interaction.reply({ content: `No mouli found with this offset`, ephemeral: true });
+                return;
+            }
+            if (relayData.length < mouliOffset * -1)
+                sendLastMouli(interaction, mouliOffset - relayData.length * -1, years - 1);
             else {
                 const testRunId = getLast_testRunId(relayData);
                 const embed = setNotificationEmbed(relayData.slice(mouliOffset)[0], testRunId);
@@ -52,9 +60,9 @@ export let command = {
             .setRequired(false)
         ),
 	async execute(interaction) {
-        let number = interaction.options.getNumber('offset') ?? 1;
+        let number = interaction.options.getNumber('offset') ?? -1;
         if (number === 0)
-            number = 1;
+            number = -1;
         if (number > 0)
             number *= -1;
         let actualYears = new Date().getFullYear();
