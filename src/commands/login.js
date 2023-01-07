@@ -24,7 +24,7 @@ async function setTokenLogin(interaction, email, password) {
                 token: response.data.token
             };
             setUserIdInDb(response.data.id, response.data.token, interaction.user.id);
-            await interaction.reply({ content: "You're logged in! (Your connection expires in 24h)", ephemeral: true });
+            await interaction.reply({ content: "You're logged in!", ephemeral: true });
         }
     }).catch(async (error) => {
         sendError(error);
