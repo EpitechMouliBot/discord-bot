@@ -92,10 +92,10 @@ export function getCompleteUrl(testCode, testSlug, testRunId, year) {
 }
 
 export function getAdaptiveColor(percentPassed) {
-    if (percentPassed < 25)
-        return (0xdb0f0f);
-    else if (percentPassed < 75)
+    if (percentPassed > 75)
+        return (0x45ad0e);
+    else if (percentPassed > 25)
         return (0xd36410);
     else
-        return (0x45ad0e);
+        return (0xdb0f0f);
 }
