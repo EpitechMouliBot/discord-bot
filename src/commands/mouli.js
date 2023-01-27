@@ -25,7 +25,7 @@ async function sendLastMouli(interaction, mouliOffset, years) {
                 sendLastMouli(interaction, mouliOffset - relayData.length * -1, years - 1);
             else {
                 const testRunId = getLast_testRunId(relayData);
-                const embed = setNotificationEmbed(relayData.slice(mouliOffset)[0], testRunId);
+                const embed = setNotificationEmbed(relayData.slice(mouliOffset)[0], testRunId, years);
                 interaction.reply({embeds: embed['embed'], files: embed['files']})
             }
         }

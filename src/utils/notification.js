@@ -18,14 +18,14 @@ function createEmbed(title, description, statusContent, normeContent, testUrl, c
     return (embed);
 }
 
-export function setNotificationEmbed(lastTestRunInfo, testRunId) {
+export function setNotificationEmbed(lastTestRunInfo, testRunId, year) {
     let title = lastTestRunInfo['project']['name'];
     let percentPassed = calculateSkillsPercent(lastTestRunInfo['results']['skills']);
     title += ' | [' + percentPassed.toString() + '%]';
     const description = formatDate(lastTestRunInfo['date']);
     const statusContent = getCompleteStatus(lastTestRunInfo['results']['externalItems']);
     const normeContent = getCompleteNorme(lastTestRunInfo['results']['externalItems']);
-    const testUrl = getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId);
+    const testUrl = getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId, year);
     const color = getAdaptiveColor(percentPassed);
     const notificationEmbed = createEmbed(title, description, statusContent, normeContent, testUrl, color);
     const thumbnailImage = new AttachmentBuilder('./images/epitechmoulibot_logo.png');
