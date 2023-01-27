@@ -79,9 +79,10 @@ export function getCompleteNorme(externalItems) {
     return (norme);
 }
 
-export function getCompleteUrl(testCode, testSlug, testRunId) {
-    let url = 'https://my.epitech.eu/index.html#d/2021/';
-
+export function getCompleteUrl(testCode, testSlug, testRunId, year) {
+    let url = 'https://my.epitech.eu/index.html#d/';
+    url += year;
+    url += '/';
     url += testCode;
     url += '/';
     url += testSlug;

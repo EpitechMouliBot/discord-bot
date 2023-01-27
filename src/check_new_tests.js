@@ -11,11 +11,11 @@ function millisecondToMinute(milliseconds) {
     return milliseconds / 60000;
 }
 
-async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId) {
+async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId, year) {
     var statusDiscord = 1;
     try {
         const channel = await client.channels.fetch(userInfo['channel_id']);
-        const embed = setNotificationEmbed(relayData.slice(-1)[0], testRunId);
+        const embed = setNotificationEmbed(relayData.slice(-1)[0], testRunId, year);
         await channel.send({content:`<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files']});
     } catch (error) {
         statusDiscord = 0;
@@ -42,7 +42,7 @@ async function checkForOneUser(client, userInfo, years) {
             checkForOneUser(client, userInfo, years - 1);
         const testRunId = getLast_testRunId(relayData);
         if (testRunId !== 0 && testRunId !== userInfo.last_testRunId && userInfo['channel_id'] !== "0")
-            await sendNotif(client, relayData, userInfo, testRunId, userInfo.last_testRunId);
+            await sendNotif(client, relayData, userInfo, testRunId, userInfo.last_testRunId, years);
     }).catch((error) => {
         sendError(error);
     });
