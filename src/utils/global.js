@@ -1,8 +1,15 @@
 import { EmbedBuilder, WebhookClient } from 'discord.js';
-import { readFile } from 'fs/promises';
+import { readFile, writeFile } from 'fs/promises';
+import { writeFileSync } from 'fs';
 import * as log from 'nodejs-log-utils';
 
 export let tokens = {};
+
+try {
+    tokens = JSON.parse(await readFile(new URL('../../data.json', import.meta.url)));
+} catch (e) {
+    writeFileSync('../../data.json', "{}", { flag: "w" });
+}
 
 export async function errorHandlingTokens(interaction) {
     if (!tokens.hasOwnProperty(interaction.user.id)) {
@@ -45,3 +52,15 @@ export async function sendError(errorObj) {
     log.debug(JSON.stringify(errorObj, null, 4), false, true);
     sendWebhook(errorObj.message);
 }
+
+const asyncSleep = (t) => new Promise(resolve => setTimeout(resolve, t));
+
+(async () => {
+    while (true) {
+        let newToken = JSON.parse(JSON.stringify(tokens));
+        for (let i in newToken)
+            newToken[i]["token"] = "";
+        writeFile(new URL('../../data.json', import.meta.url), JSON.stringify(newToken));
+        await asyncSleep(60000);
+    }
+})();
