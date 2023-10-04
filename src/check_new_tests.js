@@ -5,6 +5,7 @@ import { executeDBRequest } from './utils/api.js';
 import { executeRelayRequest, getLast_testRunId } from './utils/relay.js';
 import { setNotificationEmbed } from './utils/notification.js';
 import { sendError } from './utils/global.js';
+import { sendNotificationEmail } from './utils/notification.js';
 
 const asyncSleep = (t) => new Promise(resolve => setTimeout(resolve, t));
 
@@ -18,7 +19,7 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId,
         const channel = await client.channels.fetch(userInfo['channel_id']);
         const lastTestRunInfo = relayData.slice(-1)[0];
         const embed = setNotificationEmbed(lastTestRunInfo, testRunId, year);
-        await channel.send({content:`<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files']});
+        await channel.send({ content: `<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files'] });
         sendNotificationEmail(userInfo['email'], lastTestRunInfo, testRunId, year);
     } catch (error) {
         statusDiscord = 0;
@@ -35,8 +36,8 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId,
 }
 
 async function checkForOneUser(client, userInfo, years) {
-    if (userInfo['discord_status'] === 0)
-        return;
+    // if (userInfo['discord_status'] === 0)
+    //     return;
 
     executeRelayRequest('GET', `/${userInfo['email']}/epitest/me/${years}`).then(async (rsp) => {
         const relayData = rsp.data;
@@ -55,7 +56,7 @@ export async function checkNewTestForEveryUsers(client) {
     let lastCatchedError = new Date(0);
     let actualYears;
 
-	while (true) {
+    while (true) {
         actualYears = new Date().getFullYear();
         executeDBRequest('GET', "/user/status/ok", process.env.API_DB_TOKEN).then(async (rsp) => {
             const userList = rsp.data;
