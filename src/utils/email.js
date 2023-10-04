@@ -57,7 +57,7 @@ export function sendEmail(toMail, percentPassed, url, projectName, statusContent
     </head>
     <body>
         <div class="container">
-            <div class="header">${projectName} | <span class="percent">${percentPassed.toFixed(2)}%</span></div>
+            <div class="header">${projectName} | <span class="percent">${percentPassed}%</span></div>
             <div class="section">
                 <p><strong>Status</strong></p>
                 <p>${statusContent}</p>
