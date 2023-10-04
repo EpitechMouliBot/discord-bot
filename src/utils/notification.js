@@ -1,3 +1,4 @@
+import { sendEmail } from './email.js';
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { formatDate, calculateSkillsPercent, getCompleteStatus, getCompleteNorme, getCompleteUrl, getAdaptiveColor } from './set_information.js';
 
@@ -16,6 +17,15 @@ function createEmbed(title, description, statusContent, normeContent, testUrl, c
     .setFooter({ text: 'my.epitech.eu', iconURL: 'attachment://myepitech_logo.png' })
     .setURL(testUrl);
     return (embed);
+}
+
+export function sendNotificationEmail(toSend, lastTestRunInfo, testRunId, year) {
+    sendEmail(toSend,
+        calculateSkillsPercent(lastTestRunInfo['results']['skills']),
+        getCompleteUrl(lastTestRunInfo['project']['module']['code'], lastTestRunInfo['project']['slug'], testRunId, year),
+        lastTestRunInfo['project']['name'],
+        getCompleteStatus(lastTestRunInfo['results']['externalItems']),
+        getCompleteNorme(lastTestRunInfo['results']['externalItems']));
 }
 
 export function setNotificationEmbed(lastTestRunInfo, testRunId, year) {

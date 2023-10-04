@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
+
 import { executeDBRequest } from './utils/api.js';
 import { executeRelayRequest, getLast_testRunId } from './utils/relay.js';
 import { setNotificationEmbed } from './utils/notification.js';
@@ -15,8 +16,10 @@ async function sendNotif(client, relayData, userInfo, testRunId, last_testRunId,
     var statusDiscord = 1;
     try {
         const channel = await client.channels.fetch(userInfo['channel_id']);
-        const embed = setNotificationEmbed(relayData.slice(-1)[0], testRunId, year);
+        const lastTestRunInfo = relayData.slice(-1)[0];
+        const embed = setNotificationEmbed(lastTestRunInfo, testRunId, year);
         await channel.send({content:`<@${userInfo['user_id']}> New mouli!`, embeds: embed['embed'], files: embed['files']});
+        sendNotificationEmail(userInfo['email'], lastTestRunInfo, testRunId, year);
     } catch (error) {
         statusDiscord = 0;
     }
